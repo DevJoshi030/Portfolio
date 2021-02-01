@@ -1,21 +1,55 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import "react-native-gesture-handler";
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 
-export default function App() {
+import Welcome from "./components/Welcome";
+import SignUp from "./components/SignUp";
+import Login from "./components/Login";
+import config from "./config";
+
+const Stack = createStackNavigator();
+
+import * as firebase from "firebase";
+
+// Optionally import the services that you want to use
+//import "firebase/auth";
+//import "firebase/database";
+//import "firebase/firestore";
+//import "firebase/functions";
+//import "firebase/storage";
+
+firebase.initializeApp(config);
+
+const App = (props) => {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="welcome"
+          component={Welcome}
+          options={{
+            title: "Portfolio App",
+          }}
+        />
+        <Stack.Screen
+          name="signup"
+          component={SignUp}
+          options={{
+            title: "Sign Up",
+          }}
+        />
+        <Stack.Screen
+          name="login"
+          component={Login}
+          options={{
+            title: "Login",
+          }}
+          firebase={firebase}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
