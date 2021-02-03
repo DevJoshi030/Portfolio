@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Text, StyleSheet, TextInput, Button, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import { Text, Button, Input, Icon } from "react-native-elements";
 import { Col, Row, Grid } from "react-native-easy-grid";
 
-import * as firebase from "firebase";
+import firebase from "firebase";
 
 const SignUp = (props) => {
   const [name, setName] = useState();
@@ -10,7 +11,7 @@ const SignUp = (props) => {
   const [password, setPassword] = useState();
   const [confirmPassword, setConfirmPassword] = useState();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async () => {
     if (password.trim() !== confirmPassword.trim()) {
       return;
     }
@@ -28,7 +29,7 @@ const SignUp = (props) => {
               email: email,
             })
         );
-      props.navigation.navigate("welcome");
+      props.navigation.navigate("main");
     } catch (error) {
       console.log(error.toString());
     }
@@ -37,30 +38,33 @@ const SignUp = (props) => {
   return (
     <Grid style={styles.container}>
       <View style={styles.headerContainer}>
-        <Text style={styles.header}>Sign Up</Text>
+        <Text h2>Sign Up</Text>
       </View>
       <Row style={styles.row}>
         <Col style={styles.col} size={2}>
-          <TextInput
-            style={styles.input}
+          <Input
             placeholder="Name"
+            style={styles.input}
+            leftIcon={<Icon name="account-circle" size={24} color="grey" />}
             onChangeText={(str) => setName(str)}
           />
         </Col>
       </Row>
       <Row style={styles.row}>
         <Col style={styles.col} size={2}>
-          <TextInput
+          <Input
             style={styles.input}
             placeholder="Email"
+            leftIcon={<Icon name="email" size={24} color="grey" />}
             onChangeText={(str) => setEmail(str)}
           />
         </Col>
       </Row>
       <Row style={styles.row}>
         <Col style={styles.col} size={2}>
-          <TextInput
+          <Input
             style={styles.input}
+            leftIcon={<Icon name="lock" size={24} color="grey" />}
             secureTextEntry={true}
             placeholder="Password"
             onChangeText={(str) => setPassword(str)}
@@ -69,8 +73,9 @@ const SignUp = (props) => {
       </Row>
       <Row style={styles.row}>
         <Col style={styles.col} size={2}>
-          <TextInput
+          <Input
             style={styles.input}
+            leftIcon={<Icon name="vpn-key" size={24} color="grey" />}
             secureTextEntry={true}
             placeholder="Confirm Password"
             onChangeText={(str) => setConfirmPassword(str)}
@@ -80,8 +85,8 @@ const SignUp = (props) => {
       <View style={styles.submit}>
         <Button
           title="Sign Up"
-          color="#2a3eb1"
-          onPress={(event) => handleSubmit(event)}
+          buttonStyle={styles.purple}
+          onPress={handleSubmit}
         />
       </View>
       <View style={styles.loginContainer}>
@@ -118,13 +123,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   input: {
-    borderWidth: 1,
-    borderColor: "blue",
-    borderRadius: 10,
-    height: 45,
-    textAlign: "left",
-    paddingLeft: 10,
-    margin: 15,
+    padding: 10,
   },
   label: {
     fontWeight: "bold",
@@ -143,6 +142,9 @@ const styles = StyleSheet.create({
   login: {
     textDecorationLine: "underline",
     fontSize: 16,
+  },
+  purple: {
+    backgroundColor: "#2a3eb1",
   },
 });
 

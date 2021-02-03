@@ -1,19 +1,20 @@
 import React, { useState } from "react";
-import { Text, StyleSheet, TextInput, Button, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Col, Row, Grid } from "react-native-easy-grid";
-import * as firebase from "firebase";
+import { Text, Button, Input, Icon } from "react-native-elements";
+
+import firebase from "firebase";
 
 const Login = (props) => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async () => {
     try {
       await firebase
         .auth()
-        .signInWithEmailAndPassword(email, password)
-        .then((res) => console.log(res.user.uid));
-      props.navigation.navigate("welcome");
+        .signInWithEmailAndPassword(email.trim(), password.trim());
+      props.navigation.navigate("main");
     } catch (error) {
       console.log(error.toString());
     }
@@ -22,21 +23,23 @@ const Login = (props) => {
   return (
     <Grid style={styles.container}>
       <View style={styles.headerContainer}>
-        <Text style={styles.header}>Log In</Text>
+        <Text h2>Log In</Text>
       </View>
       <Row style={styles.row}>
         <Col style={styles.col} size={2}>
-          <TextInput
+          <Input
             style={styles.input}
             placeholder="Email"
+            leftIcon={<Icon name="email" size={24} color="grey" />}
             onChangeText={(str) => setEmail(str)}
           />
         </Col>
       </Row>
       <Row style={styles.row}>
         <Col style={styles.col} size={2}>
-          <TextInput
+          <Input
             style={styles.input}
+            leftIcon={<Icon name="lock" size={24} color="grey" />}
             secureTextEntry={true}
             placeholder="Password"
             onChangeText={(str) => setPassword(str)}
@@ -46,8 +49,8 @@ const Login = (props) => {
       <View style={styles.submit}>
         <Button
           title="Log In"
-          color="#2a3eb1"
-          onPress={(event) => handleSubmit(event)}
+          buttonStyle={styles.pink}
+          onPress={handleSubmit}
         />
       </View>
       <View style={styles.signupContainer}>
@@ -84,13 +87,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   input: {
-    borderWidth: 1,
-    borderColor: "blue",
-    borderRadius: 10,
-    height: 45,
-    textAlign: "left",
-    paddingLeft: 10,
-    margin: 15,
+    padding: 10,
   },
   label: {
     fontWeight: "bold",
@@ -109,6 +106,9 @@ const styles = StyleSheet.create({
   signup: {
     textDecorationLine: "underline",
     fontSize: 16,
+  },
+  pink: {
+    backgroundColor: "#f50057",
   },
 });
 
