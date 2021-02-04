@@ -28,6 +28,7 @@ const Login = (props) => {
       <Row style={styles.row}>
         <Col style={styles.col} size={2}>
           <Input
+            value={email}
             style={styles.input}
             placeholder="Email"
             leftIcon={<Icon name="email" size={24} color="grey" />}
@@ -38,6 +39,7 @@ const Login = (props) => {
       <Row style={styles.row}>
         <Col style={styles.col} size={2}>
           <Input
+            value={password}
             style={styles.input}
             leftIcon={<Icon name="lock" size={24} color="grey" />}
             secureTextEntry={true}

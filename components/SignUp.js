@@ -43,6 +43,7 @@ const SignUp = (props) => {
       <Row style={styles.row}>
         <Col style={styles.col} size={2}>
           <Input
+            value={name}
             placeholder="Name"
             style={styles.input}
             leftIcon={<Icon name="account-circle" size={24} color="grey" />}
@@ -53,6 +54,7 @@ const SignUp = (props) => {
       <Row style={styles.row}>
         <Col style={styles.col} size={2}>
           <Input
+            value={email}
             style={styles.input}
             placeholder="Email"
             leftIcon={<Icon name="email" size={24} color="grey" />}
@@ -63,6 +65,7 @@ const SignUp = (props) => {
       <Row style={styles.row}>
         <Col style={styles.col} size={2}>
           <Input
+            value={password}
             style={styles.input}
             leftIcon={<Icon name="lock" size={24} color="grey" />}
             secureTextEntry={true}
@@ -74,6 +77,7 @@ const SignUp = (props) => {
       <Row style={styles.row}>
         <Col style={styles.col} size={2}>
           <Input
+            value={confirmPassword}
             style={styles.input}
             leftIcon={<Icon name="vpn-key" size={24} color="grey" />}
             secureTextEntry={true}

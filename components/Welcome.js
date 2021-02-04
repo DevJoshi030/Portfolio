@@ -6,7 +6,7 @@ const Welcome = (props) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text h3>Portfolio Management App</Text>
+        <Text h4>Portfolio Management App</Text>
       </View>
       <View style={styles.buttonContainer}>
         <View style={styles.button}>
