@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
-import { Icon, Overlay, Input, Text, Button } from "react-native-elements";
+import { Icon, Text, Button } from "react-native-elements";
 
 import firebase from "firebase";
 
+import AddOverlay from "./AddOverlay";
+
 const Main = (props) => {
-  const [stock, setStock] = useState("");
-  const [price, setPrice] = useState("");
   const [visible, setVisible] = useState(false);
 
   const handleLogOut = () => {
@@ -16,10 +16,6 @@ const Main = (props) => {
 
   const toggleOverlay = () => {
     setVisible(!visible);
-  };
-
-  const handleAdd = () => {
-    console.log(stock, price);
   };
 
   return (
@@ -36,43 +32,7 @@ const Main = (props) => {
           onPress={toggleOverlay}
         />
       </View>
-
-      <Overlay
-        isVisible={visible}
-        onBackdropPress={toggleOverlay}
-        overlayStyle={styles.overlay}
-      >
-        <>
-          <Text h3 h3Style={styles.overlayHeading}>
-            Add a stock
-          </Text>
-          <Input
-            style={styles.input}
-            placeholder="Stock Name"
-            leftIcon={<Icon name="add-business" size={24} color="grey" />}
-            onChangeText={(str) => setStock(str)}
-          />
-          <Input
-            style={styles.inputExtra}
-            placeholder="Price"
-            leftIcon={
-              <Icon
-                name="rupee"
-                size={24}
-                color="grey"
-                type="font-awesome"
-                style={styles.price}
-              />
-            }
-            onChangeText={(str) => setPrice(str)}
-          />
-          <Button
-            title="Add Stock"
-            buttonStyle={styles.pink}
-            onPress={handleAdd}
-          />
-        </>
-      </Overlay>
+      <AddOverlay visible={visible} toggleOverlay={toggleOverlay} />
     </>
   );
 };
@@ -88,26 +48,6 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
     bottom: 40,
     right: 40,
-  },
-  overlay: {
-    width: "100%",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  overlayHeading: {
-    margin: 15,
-  },
-  input: {
-    padding: 10,
-  },
-  inputExtra: {
-    paddingLeft: 12,
-  },
-  pink: {
-    backgroundColor: "#f50057",
-  },
-  price: {
-    marginLeft: 8,
   },
 });
 
