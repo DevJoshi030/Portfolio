@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { View, FlatList } from "react-native";
+import { View, FlatList, ToastAndroid } from "react-native";
 import { Overlay, Input, Text, Button, Icon } from "react-native-elements";
 
-import stocks from "../data/stocks";
+import firebase from "firebase";
+
+// import stocks from "../data/stocks";
 import styles from "../styles/AddOverlayStyles";
 
 const AddOverlay = (props) => {
   const [stock, setStock] = useState("");
   const [price, setPrice] = useState("");
   const [count, setCount] = useState("");
+  const stocks = props.stocks;
   const [matchList, setMatchList] = useState([]);
 
   const setupMatchList = () => {
@@ -25,7 +28,7 @@ const AddOverlay = (props) => {
 
   const onItemPress = async (title) => {
     let priceData = "";
-    await fetch("https://finance.yahoo.com/quote/" + title)
+    await fetch("https://finance.yahoo.com/quote/" + title + ".NS")
       .then((res) => res.text())
       .then((data) => {
         const index = data.indexOf(
@@ -46,9 +49,9 @@ const AddOverlay = (props) => {
     handleStockChange(title);
   };
 
-  const Item = (item) => (
-    <View style={styles.item} onTouchEnd={() => onItemPress(item.title, 1)}>
-      <Text style={styles.title}>{item.title}</Text>
+  const Item = (props) => (
+    <View style={styles.item} onTouchEnd={() => onItemPress(props.title)}>
+      <Text style={styles.title}>{props.title}</Text>
       <View
         style={{
           borderBottomColor: "grey",
@@ -80,20 +83,29 @@ const AddOverlay = (props) => {
     props.toggleOverlay();
   };
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     setStock("");
     setPrice("");
     setCount("");
     setupMatchList();
-    alert("Stock: " + stock + "\nPrice: " + price + "\nQuantity: " + count);
-    props.toggleOverlay();
+    const id = firebase.auth().currentUser.uid;
+
+    await firebase
+      .database()
+      .ref("/" + id + "/" + stock)
+      .set({
+        price: price,
+        count: count,
+      });
+    props.refresh();
+    ToastAndroid.show("Stock Added Successfully!", ToastAndroid.LONG);
   };
 
   const renderItem = (object) => <Item title={object.item.stock} />;
   return (
     <Overlay
       isVisible={props.visible}
-      onBackdropPress={props.toggleOverlay}
+      onBackdropPress={handleBack}
       overlayStyle={styles.overlay}
       fullScreen
     >
@@ -129,7 +141,7 @@ const AddOverlay = (props) => {
                 fontSize: 16,
               }}
             >
-              Enter name to search
+              Enter a valid stock name
             </Text>
           )}
         />
