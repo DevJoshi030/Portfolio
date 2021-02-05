@@ -1,14 +1,25 @@
-import React from "react";
-import { View, ActivityIndicator, StyleSheet, Text } from "react-native";
+import React, { useEffect } from "react";
+import { View, ActivityIndicator, Text } from "react-native";
 
 import firebase from "firebase";
 import styles from "../styles/SetupStyles";
 
 const Setup = (props) => {
-  firebase.auth().onAuthStateChanged((user) => {
-    if (user) props.navigation.navigate("main");
-    else props.navigation.navigate("welcome");
-  });
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        props.navigation.reset({
+          index: 0,
+          routes: [{ name: "main" }],
+        });
+      } else {
+        props.navigation.reset({
+          index: 0,
+          routes: [{ name: "welcome" }],
+        });
+      }
+    });
+  }, []);
 
   return (
     <View style={styles.loading}>
