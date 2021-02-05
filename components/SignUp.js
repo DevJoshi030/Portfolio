@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import { Text, Button, Input, Icon } from "react-native-elements";
 import { Col, Row, Grid } from "react-native-easy-grid";
 
@@ -44,6 +44,7 @@ const SignUp = (props) => {
       <Row style={styles.row}>
         <Col style={styles.col} size={2}>
           <Input
+            autoFocus
             value={name}
             placeholder="Name"
             style={styles.input}

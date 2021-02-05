@@ -20,11 +20,7 @@ const AddOverlay = (props) => {
   };
 
   useEffect(() => {
-    let tempList = [];
-    stocks.map((stock, id) => {
-      tempList.push({ id: id.toString(), stock });
-    });
-    setMatchList(tempList);
+    setupMatchList();
   }, []);
 
   const onItemPress = async (title) => {
