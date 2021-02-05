@@ -5,6 +5,7 @@ import { Icon, Text, Button } from "react-native-elements";
 import firebase from "firebase";
 
 import AddOverlay from "./AddOverlay";
+import styles from "../styles/MainStyles";
 
 const Main = (props) => {
   const [visible, setVisible] = useState(false);
@@ -36,19 +37,5 @@ const Main = (props) => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  buttonContainer: {
-    position: "absolute",
-    alignSelf: "flex-end",
-    bottom: 40,
-    right: 40,
-  },
-});
 
 export default Main;

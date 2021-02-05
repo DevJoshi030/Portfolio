@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, FlatList } from "react-native";
+import { View, FlatList } from "react-native";
 import { Overlay, Input, Text, Button, Icon } from "react-native-elements";
 
 import stocks from "../data/stocks";
+import styles from "../styles/AddOverlayStyles";
 
 const AddOverlay = (props) => {
   const [stock, setStock] = useState("");
@@ -30,26 +31,27 @@ const AddOverlay = (props) => {
     let priceData = "";
     await fetch("https://finance.yahoo.com/quote/" + title)
       .then((res) => res.text())
-      .then((data) => (priceData = data));
+      .then((data) => {
+        const index = data.indexOf(
+          '<span class="Trsdu(0.3s) Trsdu(0.3s) Fw(b) Fz(36px) Mb(-4px) D(b)" data-reactid="20">'
+        );
 
-    const index = priceData.indexOf(
-      '<span class="Trsdu(0.3s) Trsdu(0.3s) Fw(b) Fz(36px) Mb(-4px) D(b)" data-reactid="20">'
-    );
+        const start =
+          index +
+          '<span class="Trsdu(0.3s) Trsdu(0.3s) Fw(b) Fz(36px) Mb(-4px) D(b)" data-reactid="20">'
+            .length;
 
-    const start =
-      index +
-      '<span class="Trsdu(0.3s) Trsdu(0.3s) Fw(b) Fz(36px) Mb(-4px) D(b)" data-reactid="20">'
-        .length;
+        const len = data.slice(start).indexOf("</span>");
+        priceData = data.slice(start, start + len);
+      });
 
-    const len = priceData.slice(start).indexOf("</span>");
-    priceData = priceData.slice(start, start + len);
     setStock(title);
     setPrice(priceData);
     handleStockChange(title);
   };
 
   const Item = (item) => (
-    <View style={styles.item} onTouchStart={() => onItemPress(item.title, 1)}>
+    <View style={styles.item} onTouchEnd={() => onItemPress(item.title, 1)}>
       <Text style={styles.title}>{item.title}</Text>
       <View
         style={{
@@ -72,6 +74,14 @@ const AddOverlay = (props) => {
     });
     setMatchList(tempList);
     setStock(str);
+  };
+
+  const handleBack = () => {
+    setStock("");
+    setPrice("");
+    setCount("");
+    setupMatchList();
+    props.toggleOverlay();
   };
 
   const handleAdd = () => {
@@ -97,7 +107,7 @@ const AddOverlay = (props) => {
             name="arrow-back"
             color="#2a3eb1"
             size={40}
-            onPress={props.toggleOverlay}
+            onPress={handleBack}
           />
         </View>
         <Text h3 h3Style={styles.overlayHeading}>
@@ -167,44 +177,4 @@ const AddOverlay = (props) => {
   );
 };
 
-const styles = StyleSheet.create({
-  overlay: {
-    width: "100%",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  overlayHeading: {
-    margin: 15,
-  },
-  input: {
-    padding: 10,
-  },
-  inputExtra: {
-    paddingLeft: 12,
-  },
-  pink: {
-    backgroundColor: "#f50057",
-  },
-  price: {
-    marginLeft: 8,
-  },
-  item: {
-    height: 24,
-    margin: 10,
-  },
-  title: {
-    fontSize: 16,
-  },
-  list: {
-    width: "100%",
-    height: "45%",
-    flexGrow: 0,
-  },
-  backContainer: {
-    position: "absolute",
-    alignSelf: "flex-end",
-    top: 40,
-    left: 20,
-  },
-});
 export default AddOverlay;

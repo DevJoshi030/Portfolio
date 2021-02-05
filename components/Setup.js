@@ -2,6 +2,7 @@ import React from "react";
 import { View, ActivityIndicator, StyleSheet, Text } from "react-native";
 
 import firebase from "firebase";
+import styles from "../styles/SetupStyles";
 
 const Setup = (props) => {
   firebase.auth().onAuthStateChanged((user) => {
@@ -16,19 +17,5 @@ const Setup = (props) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  headerText: {
-    fontWeight: "bold",
-    fontSize: 24,
-    textAlign: "center",
-    margin: 15,
-  },
-  loading: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
 
 export default Setup;

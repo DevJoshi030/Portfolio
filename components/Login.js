@@ -4,6 +4,7 @@ import { Col, Row, Grid } from "react-native-easy-grid";
 import { Text, Button, Input, Icon } from "react-native-elements";
 
 import firebase from "firebase";
+import styles from "../styles/LoginStyles";
 
 const Login = (props) => {
   const [email, setEmail] = useState();
@@ -67,51 +68,5 @@ const Login = (props) => {
     </Grid>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  headerContainer: {
-    margin: 20,
-    textAlign: "center",
-  },
-  header: {
-    fontWeight: "bold",
-    fontSize: 24,
-  },
-  row: {
-    height: 60,
-  },
-  col: {
-    padding: 10,
-  },
-  input: {
-    padding: 10,
-  },
-  label: {
-    fontWeight: "bold",
-    fontSize: 20,
-    textAlignVertical: "center",
-  },
-  submit: {
-    marginTop: 25,
-    borderRadius: 15,
-    width: "30%",
-  },
-  signupContainer: {
-    marginTop: 15,
-    alignItems: "flex-end",
-  },
-  signup: {
-    textDecorationLine: "underline",
-    fontSize: 16,
-  },
-  pink: {
-    backgroundColor: "#f50057",
-  },
-});
 
 export default Login;
