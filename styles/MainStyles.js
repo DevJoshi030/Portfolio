@@ -9,7 +9,7 @@ export default {
     right: 40,
   },
   item: {
-    height: 50,
+    height: "auto",
     margin: 10,
   },
   title: {

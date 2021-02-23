@@ -28,24 +28,13 @@ const AddOverlay = (props) => {
 
   const onItemPress = async (title) => {
     let priceData = "";
-    await fetch("https://finance.yahoo.com/quote/" + title + ".NS")
-      .then((res) => res.text())
-      .then((data) => {
-        const index = data.indexOf(
-          '<span class="Trsdu(0.3s) Trsdu(0.3s) Fw(b) Fz(36px) Mb(-4px) D(b)" data-reactid="20">'
-        );
-
-        const start =
-          index +
-          '<span class="Trsdu(0.3s) Trsdu(0.3s) Fw(b) Fz(36px) Mb(-4px) D(b)" data-reactid="20">'
-            .length;
-
-        const len = data.slice(start).indexOf("</span>");
-        priceData = data.slice(start, start + len);
-      });
+    await fetch(
+      "https://17BCE020.pythonanywhere.com/api/get-stock-price/" + title + ".NS"
+    )
+      .then((res) => res.json())
+      .then((data) => setPrice(data.price.toFixed(3).toString()));
 
     setStock(title);
-    setPrice(priceData);
     handleStockChange(title);
   };
 
