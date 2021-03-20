@@ -32,7 +32,7 @@ const AddOverlay = (props) => {
       "https://17BCE020.pythonanywhere.com/api/get-stock-price/" + title + ".NS"
     )
       .then((res) => res.json())
-      .then((data) => setPrice(data.price.toFixed(3).toString()));
+      .then((data) => setPrice(data.price.toFixed(2).toString()));
 
     setStock(title);
     handleStockChange(title);
