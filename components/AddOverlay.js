@@ -87,7 +87,10 @@ const AddOverlay = (props) => {
         count: count,
       });
     props.refresh();
-    ToastAndroid.show("Stock Added Successfully!", ToastAndroid.LONG);
+    ToastAndroid.show(
+      "Stock Added Successfully! It will be available in the list after a short period",
+      ToastAndroid.LONG
+    );
   };
 
   const renderItem = (object) => <Item title={object.item.stock} />;

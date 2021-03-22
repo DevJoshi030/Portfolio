@@ -1,79 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { View, FlatList, ActivityIndicator, ToastAndroid } from "react-native";
 import { Icon, Text, Button } from "react-native-elements";
 
 import firebase from "firebase";
 
 import AddOverlay from "./AddOverlay";
+import { getStockPrice, getUserStocks } from "../utils/stockFunctions";
 import styles from "../styles/MainStyles";
 
 const Main = (props) => {
   const [visible, setVisible] = useState(false);
   const [userStocks, setUserStocks] = useState(null);
-  const [listStocks, setListStocks] = useState(null);
   const [stocks, setStocks] = useState([]);
+  const stockIndex = useRef(0);
+  const listStocks = useRef(null);
   const [fetchReq, setFetchReq] = useState(false);
-
-  const getStockPrice = async (stock) => {
-    return await fetch(
-      "https://17BCE020.pythonanywhere.com/api/get-stock-price/" + stock + ".NS"
-    )
-      .then((res) => res.json())
-      .then((data) => data.price.toFixed(2).toString());
-  };
-
-  const getStocksData = async () => {
-    let result = [];
-
-    for (const stock of userStocks) {
-      result.push({
-        name: stock.name,
-        count: stock.count,
-        storedPrice: stock.price,
-        price: await getStockPrice(stock.name),
-      });
-    }
-    return result;
-  };
-
-  useEffect(() => {
-    const updateStocks = async () => {
-      let data = userStocks ? await getStocksData() : null;
-      return data;
-    };
-    setTimeout(async () => {
-      const data = await updateStocks();
-      data ? setListStocks(data) : null;
-      setFetchReq((prevFetchReq) => !prevFetchReq);
-    }, 1000);
-  }, [fetchReq]);
-
-  const getUserStocks = () => {
-    const id = firebase.auth().currentUser.uid;
-    let result = [];
-    firebase
-      .database()
-      .ref("/" + id)
-      .on("value", (snapshot) => {
-        let value = snapshot.val();
-        for (let i in value) {
-          result.push({
-            name: i,
-            count: value[i].count,
-            price: value[i].price,
-            storedPrice: value[i].price,
-          });
-        }
-      });
-    return result;
-  };
-
-  useEffect(() => {
-    const result = getUserStocks();
-    setUserStocks(result);
-    setListStocks(result);
-    return;
-  }, []);
 
   useEffect(() => {
     firebase
@@ -84,6 +25,49 @@ const Main = (props) => {
       });
     return;
   }, []);
+
+  useEffect(() => {
+    const result = getUserStocks();
+    setUserStocks(result);
+    return;
+  }, []);
+
+  useEffect(() => {
+    const update = async () => {
+      if (userStocks !== null && userStocks.length !== 0) {
+        if (stockIndex.current >= userStocks.length) {
+          stockIndex.current = 0;
+        }
+        stock = userStocks.slice()[stockIndex.current];
+
+        listStocks.current.splice(stockIndex.current, 1, {
+          name: stock.name,
+          count: stock.count,
+          storedPrice: stock.price,
+          price: await getStockPrice(stock.name),
+        });
+        setFetchReq((prevFetchReq) => !prevFetchReq);
+        return 0;
+      }
+    };
+    setTimeout(async () => {
+      if (
+        listStocks.current === null &&
+        userStocks !== null &&
+        userStocks.length !== 0
+      ) {
+        listStocks.current = userStocks.slice();
+        setFetchReq((prevFetchReq) => !prevFetchReq);
+        return;
+      }
+      const returnVal = await update();
+      if (returnVal === 0) {
+        stockIndex.current += 1;
+        return;
+      }
+      setFetchReq((prevFetchReq) => !prevFetchReq);
+    }, 10);
+  }, [fetchReq]);
 
   const handleLogOut = () => {
     firebase.auth().signOut();
@@ -172,10 +156,10 @@ const Main = (props) => {
   return (
     <>
       <View style={styles.container}>
-        {listStocks ? (
+        {listStocks.current !== null ? (
           <FlatList
             style={styles.list}
-            data={listStocks}
+            data={listStocks.current}
             renderItem={renderItem}
             keyExtractor={(item) => item.name}
             ListEmptyComponent={() => (
