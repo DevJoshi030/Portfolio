@@ -3,6 +3,8 @@ import { View } from "react-native";
 import { Col, Row, Grid } from "react-native-easy-grid";
 import { Text, Button, Input, Icon } from "react-native-elements";
 
+import { useNavigation } from "@react-navigation/native";
+
 import firebase from "firebase";
 import styles from "../styles/LoginStyles";
 
@@ -10,12 +12,14 @@ const Login = (props) => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
 
+  const navigation = useNavigation();
+
   const handleSubmit = async () => {
     try {
       await firebase
         .auth()
         .signInWithEmailAndPassword(email.trim(), password.trim());
-      props.navigation.navigate("main");
+      navigation.navigate("main");
     } catch (error) {
       console.log(error.toString());
     }
@@ -60,7 +64,7 @@ const Login = (props) => {
       <View style={styles.signupContainer}>
         <Text>Don't have an account yet?</Text>
         <Text
-          onPress={() => props.navigation.navigate("signup")}
+          onPress={() => navigation.navigate("signup")}
           style={styles.signup}
         >
           Sign Up

@@ -1,36 +1,36 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, FlatList, ActivityIndicator, ToastAndroid } from "react-native";
-import { Icon, Text, Button } from "react-native-elements";
+import { View, FlatList, ActivityIndicator } from "react-native";
+import { Icon, Text } from "react-native-elements";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
-import firebase from "firebase";
-
-import AddOverlay from "./AddOverlay";
 import { getStockPrice, getUserStocks } from "../utils/stockFunctions";
 import styles from "../styles/MainStyles";
 
 const Main = (props) => {
-  const [visible, setVisible] = useState(false);
   const [userStocks, setUserStocks] = useState(null);
-  const [stocks, setStocks] = useState([]);
   const stockIndex = useRef(0);
   const listStocks = useRef(null);
   const [fetchReq, setFetchReq] = useState(false);
+  const [doNotUpdate, setDoNotUpdate] = useState(false);
 
-  useEffect(() => {
-    firebase
-      .database()
-      .ref("/stocks/stocks")
-      .on("value", (snapshot) => {
-        setStocks(snapshot.val());
-      });
-    return;
-  }, []);
+  const navigation = useNavigation();
+  const route = useRoute();
+
+  // Reset Component
+  if (route.params && route.params.refresh) {
+    route.params.refresh = false;
+    setUserStocks(null);
+    setFetchReq((prevFetchReq) => !prevFetchReq);
+    setDoNotUpdate((prevDoNotUpdate) => !prevDoNotUpdate);
+    stockIndex.current = 0;
+    listStocks.current = null;
+  }
 
   useEffect(() => {
     const result = getUserStocks();
     setUserStocks(result);
     return;
-  }, []);
+  }, [doNotUpdate]);
 
   useEffect(() => {
     const update = async () => {
@@ -38,8 +38,8 @@ const Main = (props) => {
         if (stockIndex.current >= userStocks.length) {
           stockIndex.current = 0;
         }
-        stock = userStocks.slice()[stockIndex.current];
 
+        const stock = userStocks.slice()[stockIndex.current];
         listStocks.current.splice(stockIndex.current, 1, {
           name: stock.name,
           count: stock.count,
@@ -68,21 +68,6 @@ const Main = (props) => {
       setFetchReq((prevFetchReq) => !prevFetchReq);
     }, 10);
   }, [fetchReq]);
-
-  const handleLogOut = () => {
-    firebase.auth().signOut();
-    props.navigation.navigate("setup");
-  };
-
-  const toggleOverlay = () => {
-    setVisible((prevVisible) => !prevVisible);
-  };
-
-  const handleRefresh = () => {
-    const result = getUserStocks();
-    setUserStocks(result);
-    toggleOverlay();
-  };
 
   const convertK = (value) => {
     if (value >= 1000 || value <= -1000) {
@@ -175,24 +160,13 @@ const Main = (props) => {
             )}
           />
         ) : (
-          <ActivityIndicator size="large" color="#0000ff" />
+          <ActivityIndicator
+            size="large"
+            color="#0000ff"
+            style={styles.loading}
+          />
         )}
-        <Button title="Logout" onPress={handleLogOut} />
       </View>
-      <View style={styles.buttonContainer}>
-        <Icon
-          name="add-circle"
-          color="#2a3eb1"
-          size={64}
-          onPress={toggleOverlay}
-        />
-      </View>
-      <AddOverlay
-        visible={visible}
-        toggleOverlay={toggleOverlay}
-        stocks={stocks}
-        refresh={handleRefresh}
-      />
     </>
   );
 };

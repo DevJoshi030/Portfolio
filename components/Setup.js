@@ -1,19 +1,22 @@
 import React, { useEffect } from "react";
 import { View, ActivityIndicator, Text } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 import firebase from "firebase";
 import styles from "../styles/SetupStyles";
 
 const Setup = (props) => {
+  const navigation = useNavigation();
+
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        props.navigation.reset({
+        navigation.reset({
           index: 0,
           routes: [{ name: "main" }],
         });
       } else {
-        props.navigation.reset({
+        navigation.reset({
           index: 0,
           routes: [{ name: "welcome" }],
         });

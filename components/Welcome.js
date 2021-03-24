@@ -1,10 +1,13 @@
 import React from "react";
 import { View } from "react-native";
 import { Button, Text } from "react-native-elements";
+import { useNavigation } from "@react-navigation/native";
 
 import styles from "../styles/WelcomeStyles";
 
 const Welcome = (props) => {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -15,14 +18,14 @@ const Welcome = (props) => {
           <Button
             title="Sign Up"
             buttonStyle={styles.purple}
-            onPress={() => props.navigation.navigate("signup")}
+            onPress={() => navigation.navigate("signup")}
           />
         </View>
         <View style={styles.button}>
           <Button
             title="Login"
             buttonStyle={styles.pink}
-            onPress={() => props.navigation.navigate("login")}
+            onPress={() => navigation.navigate("login")}
           />
         </View>
       </View>

@@ -1,18 +1,35 @@
 import React, { useState, useEffect } from "react";
 import { View, FlatList, ToastAndroid } from "react-native";
 import { Overlay, Input, Text, Button, Icon } from "react-native-elements";
+import { useNavigation } from "@react-navigation/native";
 
 import firebase from "firebase";
 
-// import stocks from "../data/stocks";
 import styles from "../styles/AddOverlayStyles";
+import { getStockPrice } from "../utils/stockFunctions";
 
 const AddOverlay = (props) => {
   const [stock, setStock] = useState("");
   const [price, setPrice] = useState("");
   const [count, setCount] = useState("");
-  const stocks = props.stocks;
+
+  const navigation = useNavigation();
+  const [stocks, setStocks] = useState([]);
   const [matchList, setMatchList] = useState([]);
+
+  useEffect(() => {
+    firebase
+      .database()
+      .ref("/stocks/stocks")
+      .on("value", (snapshot) => {
+        setStocks(snapshot.val());
+      });
+    return;
+  }, []);
+
+  useEffect(() => {
+    setupMatchList();
+  }, []);
 
   const setupMatchList = () => {
     let tempList = [];
@@ -22,18 +39,10 @@ const AddOverlay = (props) => {
     setMatchList(tempList);
   };
 
-  useEffect(() => {
-    setupMatchList();
-  }, []);
-
   const onItemPress = async (title) => {
-    let priceData = "";
-    await fetch(
-      "https://17BCE020.pythonanywhere.com/api/get-stock-price/" + title + ".NS"
-    )
-      .then((res) => res.json())
-      .then((data) => setPrice(data.price.toFixed(2).toString()));
+    let priceData = await getStockPrice(title);
 
+    setPrice(priceData);
     setStock(title);
     handleStockChange(title);
   };
@@ -41,13 +50,7 @@ const AddOverlay = (props) => {
   const Item = (props) => (
     <View style={styles.item} onTouchEnd={() => onItemPress(props.title)}>
       <Text style={styles.title}>{props.title}</Text>
-      <View
-        style={{
-          borderBottomColor: "grey",
-          borderBottomWidth: 0.5,
-          padding: 5,
-        }}
-      />
+      <View style={styles.itemList} />
     </View>
   );
 
@@ -64,14 +67,6 @@ const AddOverlay = (props) => {
     setStock(str);
   };
 
-  const handleBack = () => {
-    setStock("");
-    setPrice("");
-    setCount("");
-    setupMatchList();
-    props.toggleOverlay();
-  };
-
   const handleAdd = async () => {
     setStock("");
     setPrice("");
@@ -86,94 +81,71 @@ const AddOverlay = (props) => {
         price: price,
         count: count,
       });
-    props.refresh();
-    ToastAndroid.show(
-      "Stock Added Successfully! It will be available in the list after a short period",
-      ToastAndroid.LONG
-    );
+    ToastAndroid.show("Stock Added Successfully!", ToastAndroid.LONG);
+    navigation.navigate("main", {
+      refresh: true,
+    });
   };
 
   const renderItem = (object) => <Item title={object.item.stock} />;
   return (
-    <Overlay
-      isVisible={props.visible}
-      onBackdropPress={handleBack}
-      overlayStyle={styles.overlay}
-      fullScreen
-    >
-      <>
-        <View style={styles.backContainer}>
+    <>
+      <Input
+        value={stock}
+        autoFocus
+        style={styles.input}
+        placeholder="Stock Name"
+        leftIcon={<Icon name="add-business" size={24} color="grey" />}
+        onChangeText={handleStockChange}
+      />
+      <FlatList
+        style={styles.list}
+        data={matchList}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        ListEmptyComponent={() => (
+          <Text
+            style={{
+              textAlign: "center",
+              fontSize: 16,
+            }}
+          >
+            Enter a valid stock name
+          </Text>
+        )}
+      />
+      <Input
+        value={price}
+        style={styles.inputExtra}
+        placeholder="Price"
+        leftIcon={
           <Icon
-            name="arrow-back"
-            color="#2a3eb1"
-            size={40}
-            onPress={handleBack}
+            name="rupee"
+            size={24}
+            color="grey"
+            type="font-awesome"
+            style={styles.price}
           />
-        </View>
-        <Text h3 h3Style={styles.overlayHeading}>
-          Add a stock
-        </Text>
-        <Input
-          value={stock}
-          autoFocus
-          style={styles.input}
-          placeholder="Stock Name"
-          leftIcon={<Icon name="add-business" size={24} color="grey" />}
-          onChangeText={handleStockChange}
-        />
-        <FlatList
-          style={styles.list}
-          data={matchList}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-          ListEmptyComponent={() => (
-            <Text
-              style={{
-                textAlign: "center",
-                fontSize: 16,
-              }}
-            >
-              Enter a valid stock name
-            </Text>
-          )}
-        />
-        <Input
-          value={price}
-          style={styles.inputExtra}
-          placeholder="Price"
-          leftIcon={
-            <Icon
-              name="rupee"
-              size={24}
-              color="grey"
-              type="font-awesome"
-              style={styles.price}
-            />
-          }
-          onChangeText={(str) => setPrice(str)}
-        />
-        <Input
-          value={count}
-          style={styles.inputExtra}
-          placeholder="Quantity"
-          leftIcon={
-            <Icon
-              name="rupee"
-              size={24}
-              color="grey"
-              type="font-awesome"
-              style={styles.price}
-            />
-          }
-          onChangeText={(str) => setCount(str)}
-        />
-        <Button
-          title="Add Stock"
-          buttonStyle={styles.pink}
-          onPress={handleAdd}
-        />
-      </>
-    </Overlay>
+        }
+        onChangeText={(str) => setPrice(str)}
+      />
+      <Input
+        value={count}
+        style={styles.inputExtra}
+        placeholder="Quantity"
+        leftIcon={
+          <Icon
+            name="rupee"
+            size={24}
+            color="grey"
+            type="font-awesome"
+            style={styles.price}
+          />
+        }
+        onChangeText={(str) => setCount(str)}
+      />
+      <Button title="Add Stock" buttonStyle={styles.pink} onPress={handleAdd} />
+    </>
   );
 };
 

@@ -55,4 +55,7 @@ export default {
     padding: 5,
     width: "100%",
   },
+  loading: {
+    flex: 1,
+  },
 };

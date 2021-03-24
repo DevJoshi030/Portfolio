@@ -32,10 +32,9 @@ export default {
     height: "45%",
     flexGrow: 0,
   },
-  backContainer: {
-    position: "absolute",
-    alignSelf: "flex-end",
-    top: 40,
-    left: 20,
+  itemList: {
+    borderBottomColor: "grey",
+    borderBottomWidth: 0.5,
+    padding: 5,
   },
 };
