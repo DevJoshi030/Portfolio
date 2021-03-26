@@ -1,4 +1,4 @@
-# Stock Market Portfolio Management Application
+# Stock Market Portfolio Management Application (FrontEnd)
 
 # Objective
 
