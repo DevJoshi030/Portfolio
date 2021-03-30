@@ -1,12 +1,23 @@
+import { Dimensions } from "react-native";
+
+const screenWidth = Dimensions.get("window").width;
+const MARGIN = screenWidth / 15;
+
 export default {
-  container: {
-    flex: 1,
+  chartBody: {
+    backgroundColor: "black",
+    padding: screenWidth / 20,
   },
-  buttonContainer: {
-    position: "absolute",
-    alignSelf: "flex-end",
-    bottom: 40,
-    right: 40,
+  column: {
+    backgroundColor: "black",
+    width: "15%",
+  },
+  columnText: {
+    marginTop: MARGIN / 2,
+    marginBottom: MARGIN / 2,
+    color: "white",
+    alignSelf: "center",
+    fontSize: 10,
   },
   item: {
     height: "auto",

@@ -42,6 +42,8 @@ const SideMenu = (props) => {
           Add Stock
         </MenuItem>
 
+        <MenuDivider />
+
         <MenuItem
           onPress={() => {
             _menu.hide();

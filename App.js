@@ -17,6 +17,7 @@ const Stack = createStackNavigator();
 import firebase from "firebase";
 import SideMenu from "./components/SideMenu";
 import AddOverlay from "./components/AddOverlay";
+import Chart from "./components/Chart";
 
 LogBox.ignoreLogs(["Setting a timer"]);
 LogBox.ignoreLogs(["Cannot update a component"]);
@@ -87,6 +88,13 @@ const App = (props) => {
           component={AddOverlay}
           options={{
             title: "Add Stock",
+          }}
+        />
+        <Stack.Screen
+          name="chart"
+          component={Chart}
+          options={{
+            title: "Detail View",
           }}
         />
       </Stack.Navigator>

@@ -1,5 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, FlatList, ActivityIndicator } from "react-native";
+import {
+  View,
+  FlatList,
+  ActivityIndicator,
+  TouchableOpacity,
+} from "react-native";
 import { Icon, Text } from "react-native-elements";
 import { useNavigation, useRoute } from "@react-navigation/native";
 
@@ -12,6 +17,9 @@ const Main = (props) => {
   const listStocks = useRef(null);
   const [fetchReq, setFetchReq] = useState(false);
   const [doNotUpdate, setDoNotUpdate] = useState(false);
+  const [totalValue, setTotalValue] = useState("0.00");
+  const [totalPL, setTotalPL] = useState("0.00");
+  const [isPLPos, setIsPLPos] = useState(false);
 
   const navigation = useNavigation();
   const route = useRoute();
@@ -47,6 +55,15 @@ const Main = (props) => {
           price: await getStockPrice(stock.name),
         });
         setFetchReq((prevFetchReq) => !prevFetchReq);
+        let value = 0;
+        let PL = 0;
+        for (const stockEntry of listStocks.current) {
+          value += stockEntry.price * stockEntry.count;
+          PL += (stockEntry.price - stockEntry.storedPrice) * stockEntry.count;
+        }
+        PL >= 0 ? setIsPLPos(true) : setIsPLPos(false);
+        setTotalValue(convertK(value));
+        setTotalPL(convertK(PL));
         return 0;
       }
     };
@@ -74,8 +91,15 @@ const Main = (props) => {
       value = value / 1000;
       value = value.toFixed(2);
       value = value + " K";
+      return value;
     }
-    return value;
+    return value.toFixed ? value.toFixed(2) : value;
+  };
+
+  const handleItemClick = (stock) => {
+    navigation.navigate("chart", {
+      name: stock,
+    });
   };
 
   const Item = (props) => {
@@ -93,39 +117,41 @@ const Main = (props) => {
     CMP = convertK(CMP) + " (" + CMPPer + "%)";
 
     return (
-      <View style={styles.item}>
-        <View style={styles.section}>
-          <Text style={styles.title}>{props.title}</Text>
-          <View style={styles.row}>
-            <Text style={styles.left}>Value</Text>
-            <Text style={styles.right}>{value}</Text>
+      <TouchableOpacity onPress={() => handleItemClick(props.title)}>
+        <View style={styles.item}>
+          <View style={styles.section}>
+            <Text style={styles.title}>{props.title}</Text>
+            <View style={styles.row}>
+              <Text style={styles.left}>Value</Text>
+              <Text style={styles.right}>{value}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.left}>P/L</Text>
+              <Text style={[styles.right, isPos ? styles.green : styles.red]}>
+                {PL}
+              </Text>
+            </View>
           </View>
-          <View style={styles.row}>
-            <Text style={styles.left}>P/L</Text>
-            <Text style={[styles.right, isPos ? styles.green : styles.red]}>
-              {PL}
-            </Text>
+          <View style={styles.space} />
+          <View style={styles.section}>
+            <View style={styles.row}>
+              <Text style={styles.left}>CMP</Text>
+              <Text style={[styles.right, isPos ? styles.green : styles.red]}>
+                {CMP}
+              </Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.left}>Avg Price</Text>
+              <Text style={styles.right}>{props.storedPrice}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.left}>Qty</Text>
+              <Text style={styles.right}>{props.count}</Text>
+            </View>
           </View>
+          <View style={styles.rule} />
         </View>
-        <View style={styles.space} />
-        <View style={styles.section}>
-          <View style={styles.row}>
-            <Text style={styles.left}>CMP</Text>
-            <Text style={[styles.right, isPos ? styles.green : styles.red]}>
-              {CMP}
-            </Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.left}>Avg Price</Text>
-            <Text style={styles.right}>{props.storedPrice}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.left}>Qty</Text>
-            <Text style={styles.right}>{props.count}</Text>
-          </View>
-        </View>
-        <View style={styles.rule} />
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -140,6 +166,22 @@ const Main = (props) => {
 
   return (
     <>
+      <View style={styles.header}>
+        <View style={[styles.row, styles.margin]}>
+          <Text style={[styles.left, styles.bold, styles.white]}>
+            Total Value
+          </Text>
+          <Text style={[styles.right, styles.white]}>Total P/L</Text>
+        </View>
+        <View style={[styles.row, styles.margin]}>
+          <Text style={[styles.left, styles.bold, styles.white]}>
+            {totalValue}
+          </Text>
+          <Text style={[styles.right, isPLPos ? styles.green : styles.red]}>
+            {totalPL}
+          </Text>
+        </View>
+      </View>
       <View style={styles.container}>
         {listStocks.current !== null ? (
           <FlatList

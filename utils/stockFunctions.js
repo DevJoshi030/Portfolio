@@ -8,6 +8,12 @@ export const getStockPrice = async (stock) => {
     .then((data) => data.price.toFixed(2).toString());
 };
 
+export const getStockData = async (stock) => {
+  return await fetch(
+    "http://localhost/api/get-stock-data/" + stock + ".NS"
+  ).then((res) => res.json());
+};
+
 export const getUserStocks = () => {
   const id = firebase.auth().currentUser.uid;
   let result = [];
