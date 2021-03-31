@@ -6,17 +6,18 @@ const MARGIN = screenWidth / 15;
 export default {
   chartBody: {
     backgroundColor: "black",
-    padding: screenWidth / 20,
+    paddingTop: screenWidth / 20,
+    paddingLeft: screenWidth / 50,
   },
   column: {
     backgroundColor: "black",
-    width: "15%",
+    width: "20%",
   },
   columnText: {
-    marginTop: MARGIN / 2,
-    marginBottom: MARGIN / 2,
+    marginTop: MARGIN / 2 - 0.65,
+    marginBottom: MARGIN / 2 - 0.65,
     color: "white",
-    alignSelf: "center",
+    paddingLeft: 10,
     fontSize: 10,
   },
   item: {
@@ -30,6 +31,7 @@ export default {
   },
   row: {
     flexDirection: "row",
+    width: "100%",
   },
   left: {
     fontSize: 16,
@@ -83,5 +85,18 @@ export default {
   },
   white: {
     color: "white",
+  },
+  leftMagrin: {
+    marginLeft: 10,
+    width: screenWidth,
+  },
+  xAxis: {
+    flexDirection: "row",
+    width: "100%",
+    paddingLeft: screenWidth / 50,
+    backgroundColor: "black",
+  },
+  heading: {
+    textAlign: "center",
   },
 };
