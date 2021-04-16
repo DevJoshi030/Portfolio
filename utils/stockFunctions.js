@@ -33,3 +33,17 @@ export const getUserStocks = () => {
     });
   return result;
 };
+
+export const getSectorData = async () => {
+  let result = {};
+  firebase
+    .database()
+    .ref("/sector")
+    .on("value", (snapshot) => {
+      let value = snapshot.val();
+      result = value;
+    });
+  await new Promise((resolve) => setTimeout(resolve, 2000));
+
+  return result;
+};

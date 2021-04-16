@@ -9,7 +9,7 @@ const Candle = (props) => {
   const close = props.candle[2];
   const high = props.candle[3];
   const low = props.candle[4];
-  const fill = close > open ? "#4AFA9A" : "#E33F64";
+  const fill = close > open ? "#26a69a" : "#b33e3c";
   const x = props.index * props.width;
   const max = Math.max(open, close);
   const min = Math.min(open, close);

@@ -20,7 +20,7 @@ const AddOverlay = (props) => {
   useEffect(() => {
     firebase
       .database()
-      .ref("/stocks/stocks")
+      .ref("/stocks")
       .on("value", (snapshot) => {
         setStocks(snapshot.val());
       });

@@ -19,7 +19,7 @@ const Login = (props) => {
       await firebase
         .auth()
         .signInWithEmailAndPassword(email.trim(), password.trim());
-      navigation.navigate("main");
+      navigation.navigate("tabnav");
     } catch (error) {
       console.log(error.toString());
     }

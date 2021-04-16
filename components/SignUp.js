@@ -34,7 +34,7 @@ const SignUp = (props) => {
               email: email,
             })
         );
-      navigation.navigate("main");
+      navigation.navigate("tabnav");
     } catch (error) {
       console.log(error.toString());
     }

@@ -13,7 +13,7 @@ const Setup = (props) => {
       if (user) {
         navigation.reset({
           index: 0,
-          routes: [{ name: "main" }],
+          routes: [{ name: "tabnav" }],
         });
       } else {
         navigation.reset({

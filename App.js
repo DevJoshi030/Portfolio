@@ -2,12 +2,12 @@ import "react-native-gesture-handler";
 import React, { useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+
 import { LogBox } from "react-native";
 
 import Welcome from "./components/Welcome";
 import SignUp from "./components/SignUp";
 import Login from "./components/Login";
-import Main from "./components/Main";
 import Setup from "./components/Setup";
 
 import config from "./config";
@@ -16,11 +16,12 @@ const Stack = createStackNavigator();
 
 import firebase from "firebase";
 import SideMenu from "./components/SideMenu";
-import AddOverlay from "./components/AddOverlay";
 import Chart from "./components/Chart";
+import TabNav from "./components/TabNav";
 
 LogBox.ignoreLogs(["Setting a timer"]);
 LogBox.ignoreLogs(["Cannot update a component"]);
+LogBox.ignoreLogs(["Can't perform"]);
 
 try {
   firebase.initializeApp(config);
@@ -63,31 +64,16 @@ const App = (props) => {
           }}
         />
         <Stack.Screen
-          name="main"
+          name="tabnav"
+          component={TabNav}
           options={{
-            title: "Main",
-            headerLeft: null,
+            title: "Portfolio App",
             headerRight: () => (
               <SideMenu
                 visible={overlayVisible}
                 setVisible={setOverlayVisible}
               />
             ),
-          }}
-        >
-          {(props) => (
-            <Main
-              {...props}
-              visible={overlayVisible}
-              setVisible={setOverlayVisible}
-            />
-          )}
-        </Stack.Screen>
-        <Stack.Screen
-          name="add"
-          component={AddOverlay}
-          options={{
-            title: "Add Stock",
           }}
         />
         <Stack.Screen

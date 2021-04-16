@@ -8,6 +8,7 @@ import { Icon } from "react-native-elements";
 import { useNavigation } from "@react-navigation/native";
 
 import styles from "../styles/SideMenuStyles";
+import { Text } from "react-native";
 
 const SideMenu = (props) => {
   let _menu = null;
@@ -25,32 +26,35 @@ const SideMenu = (props) => {
         ref={(ref) => (_menu = ref)}
         button={
           <Icon
-            name="more-vert"
-            color="#000"
+            type="ionicon"
+            name="log-out-outline"
             size={32}
-            onPress={() => _menu.show()}
+            onPress={() => handleLogOut()}
           />
         }
       >
         <MenuItem
           onPress={() => {
             _menu.hide();
-            // props.setVisible(true);
-            navigation.navigate("add");
-          }}
-        >
-          Add Stock
-        </MenuItem>
-
-        <MenuDivider />
-
-        <MenuItem
-          onPress={() => {
-            _menu.hide();
             handleLogOut();
           }}
         >
-          Log Out
+          <View>
+            <Icon
+              type="ionicon"
+              name="log-out-outline"
+              onPress={() => _menu.show()}
+            />
+            <Text
+              style={{
+                position: "absolute",
+                left: 30,
+                top: 0,
+              }}
+            >
+              Log Out
+            </Text>
+          </View>
         </MenuItem>
       </Menu>
     </View>
